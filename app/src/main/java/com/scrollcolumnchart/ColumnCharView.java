@@ -28,17 +28,10 @@ public class ColumnCharView extends View {
   private int xinit;//第一个点x坐标
   private int minXinit;//在移动时，第一个点允许最小的x坐标
   private int maxXinit;//在移动时，第一个点允许允许最大的x坐标
-  private int xylinecolor;//xy坐标轴颜色
   private int xylinewidth;//xy坐标轴大小
-  private int ylinewidth;//y坐标轴的宽度
-  private int xytextcolor;//xy坐标轴文字颜色
   private int xytextsize;//xy坐标轴文字大小
-  private int linecolor;//折线的颜色
   private float interval;//坐标间的间隔
   private int bgColor;//背景颜色
-  private int maxValue; //pef的最大值
-  private int minValue; //pef的最小值
-  private int mDefPefValue; //pef的预计值
   private List<String> dayTime;//x坐标点的值
   private int width;//控件宽度
   private int heigth;//控件高度
@@ -52,7 +45,6 @@ public class ColumnCharView extends View {
   private Paint yPaintTipsText; //y轴上的标示
   private Paint xPaintPAL;  //x轴上的点和标示
   private Paint mPolylinePaint; //折线图
-  private Path mPolylinePath;
   private Paint mCirclePaint; //折线上的圆点
 
   private int mYTextWidth; //y坐标轴文字的的宽度
@@ -62,7 +54,7 @@ public class ColumnCharView extends View {
 
   private List<Integer> drugTimeValue;
 
-  private boolean isShowHightLingt = false;
+  private boolean isShowHighLight = false;
   private int drugTimeDay = 0;
   private Handler handler;
 
@@ -73,12 +65,8 @@ public class ColumnCharView extends View {
 
   public ColumnCharView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    xylinecolor = Color.WHITE;
     xylinewidth = 2;
-    ylinewidth = 2;
-    xytextcolor = Color.BLACK;
     xytextsize = 20;
-    linecolor = Color.WHITE;
     interval = 100;
     bgColor = Color.TRANSPARENT;
 
@@ -194,7 +182,6 @@ public class ColumnCharView extends View {
     mPolylinePaint.setTextSize(xytextsize);
     mPolylinePaint.setStyle(Paint.Style.FILL);
     mPolylinePaint.setStrokeWidth(dp2px(1.5f));
-    mPolylinePath = new Path();
 
     mCirclePaint = new Paint();
     mCirclePaint.setAntiAlias(true);//抗锯齿
@@ -254,7 +241,7 @@ public class ColumnCharView extends View {
       //画矩形
       float drugTimeCount = (float) drugTimeValue.get(i);
 
-      if (isShowHightLingt && i + 1 == drugTimeDay) {
+      if (isShowHighLight && i + 1 == drugTimeDay) {
         mPolylinePaint.setColor(0x7Fff0000);
 
         String text = (int) drugTimeCount + "分钟";
@@ -344,7 +331,7 @@ public class ColumnCharView extends View {
       if (onTouchClickListener != null) {
         onTouchClickListener.OnClickListener(); // 单击事件
       }
-      showHightLight(e.getX(), e.getY());
+      showHighLight(e.getX(), e.getY());
       return super.onSingleTapUp(e);
     }
 
@@ -381,7 +368,7 @@ public class ColumnCharView extends View {
     }
   }
 
-  private void showHightLight(float x, float y) {
+  private void showHighLight(float x, float y) {
 
     if (x >= maxXinit) {
       int day;
@@ -395,10 +382,7 @@ public class ColumnCharView extends View {
 
       if (day > 0 && day - 1 < drugTimeValue.size()) {
 
-        //int drugValue = drugTimeValue.get(day - 1);
-        //float endY = yEnd - drugValue / 30 * (yEnd - yStart);
-
-        isShowHightLingt = true;
+        isShowHighLight = true;
         drugTimeDay = day;
         handler.removeCallbacks(runnable);
         handler.postDelayed(runnable, 1500);
@@ -409,7 +393,7 @@ public class ColumnCharView extends View {
 
   private Runnable runnable = new Runnable() {
     @Override public void run() {
-      isShowHightLingt = false;
+      isShowHighLight = false;
       postInvalidate();
     }
   };
@@ -474,8 +458,6 @@ public class ColumnCharView extends View {
 
     width = getWidth();
     heigth = getHeight();
-
-    //        mYTextWidth = (int)(mYTextWidth - interval/4 + 5);
 
     xStart = mYTextWidth;     // 起始的x轴点
     xEnd = width;
